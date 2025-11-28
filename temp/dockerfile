@@ -1,9 +1,17 @@
 FROM amazoncorretto:11-alpine3.17
-LABEL author="praveen"
-LABEL organization="learningthoughts"
+
+# Create user
 RUN adduser -h /petclinic -s /bin/sh -D petclinic
+
+# Create directory
+RUN mkdir -p /petclinic && chown petclinic:petclinic /petclinic
+
+# Add JAR from working link
+ADD --chown=petclinic:petclinic \
+  https://repo.spring.io/release/org/springframework/samples/spring-petclinic/2.4.2/spring-petclinic-2.4.2.jar \
+  /petclinic/spring-petclinic-2.4.2.jar
+
 USER petclinic
 WORKDIR /petclinic
-ADD --chown=petclinic:petclinic https://referenceapplicationskhaja.s3.us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar /petclinic/spring-petclinic-2.4.2.jar
-EXPOSE 8080
+
 CMD ["java", "-jar", "spring-petclinic-2.4.2.jar"]
